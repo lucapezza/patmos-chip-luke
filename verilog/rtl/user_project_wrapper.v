@@ -14,6 +14,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 `default_nettype none
+
 /*
  *-------------------------------------------------------------
  *
@@ -81,42 +82,56 @@ module user_project_wrapper #(
 /*--------------------------------------*/
 /* User project is instantiated  here   */
 /*--------------------------------------*/
+// UART
+assign io_oeb[0] = 1'b1;
+assign io_oeb[1] = 1'b0;
 
-user_proj_example mprj (
-`ifdef USE_POWER_PINS
-	.vccd1(vccd1),	// User area 1 1.8V power
-	.vssd1(vssd1),	// User area 1 digital ground
-`endif
+// Leds
+assign io_oeb[2] = 1'b0;
+assign io_oeb[3] = 1'b0;
+assign io_oeb[4] = 1'b0;
+assign io_oeb[5] = 1'b0;
+assign io_oeb[6] = 1'b0;
+assign io_oeb[7] = 1'b0;
+assign io_oeb[8] = 1'b0;
+assign io_oeb[9] = 1'b0;
 
-    .wb_clk_i(wb_clk_i),
-    .wb_rst_i(wb_rst_i),
+// SPI RAM
 
-    // MGMT SoC Wishbone Slave
+// SPI FLASH
 
-    .wbs_cyc_i(wbs_cyc_i),
-    .wbs_stb_i(wbs_stb_i),
-    .wbs_we_i(wbs_we_i),
-    .wbs_sel_i(wbs_sel_i),
-    .wbs_adr_i(wbs_adr_i),
-    .wbs_dat_i(wbs_dat_i),
-    .wbs_ack_o(wbs_ack_o),
-    .wbs_dat_o(wbs_dat_o),
+// Others ?
 
-    // Logic Analyzer
 
-    .la_data_in(la_data_in),
-    .la_data_out(la_data_out),
-    .la_oenb (la_oenb),
 
-    // IO Pads
-
-    .io_in (io_in),
-    .io_out(io_out),
-    .io_oeb(io_oeb),
-
-    // IRQ
-    .irq(user_irq)
+PatmosChip patmos(
+  .clock(wb_clk_i),
+  .reset(wb_rst_i),
+  .io_leds(
+    { io_out[9],
+      io_out[8],
+      io_out[7],
+      io_out[6],
+      io_out[5],
+      io_out[4],
+      io_out[3],
+      io_out[2]
+    }
+  ),
+  .io_uart_rx(io_in[0]),
+  .io_uart_tx(io_out[1]),
+  .io_wishbone_sel(wbs_sel_i),
+  .io_wishbone_dout(wbs_dat_o),
+  .io_wishbone_din(wbs_dat_i),
+  .io_wishbone_stb(wbs_stb_i),
+  .io_wishbone_we(wbs_we_i),
+  .io_wishbone_ack(wbs_ack_o),
+  .io_wishbone_addr(wbs_adr_i),
+  .io_wishbone_cyc(wbs_cyc_i)
 );
+
+
+
 
 endmodule	// user_project_wrapper
 
