@@ -29,16 +29,13 @@ module uart_tb;
 	wire gpio;
 	wire [37:0] mprj_io;
 	reg [3:0] ticks = 0;
-	wire [7:0] led;
 	wire [23:0] rx_string;
 	wire [23:0] tx_string = 24'h686921;
 	wire rx_done;
 	wire tx_done;
 	reg send = 0;
 
-	assign led  = mprj_io[9:2];
-
-	always #10 clock <= (clock === 1'b0);
+	always #50 clock <= (clock === 1'b0);
 
 	initial begin
 		clock = 0;
@@ -51,8 +48,8 @@ module uart_tb;
 		if(`DUMP_STRG) begin
       // Dump contents of BootMemory (writeable)
 			for(a = 0; a < 16; a = a + 1) begin
-				$dumpvars(0, uut.mprj.patmos.patmos.patmos.cores_0.fetch.bootMem.memWithWrEven.MEM[a]);
-				$dumpvars(0, uut.mprj.patmos.patmos.patmos.cores_0.fetch.bootMem.memWithWrOdd.MEM[a]);
+				$dumpvars(0, uut.mprj.patmos.patmos.patmos.cores_0.fetch.bootMem.memWithWrEven.mem[a]);
+				$dumpvars(0, uut.mprj.patmos.patmos.patmos.cores_0.fetch.bootMem.memWithWrOdd.mem[a]);
 			end
 			// Dump register file
 		  for(a = 0; a < 32; a = a + 1) begin
@@ -79,10 +76,10 @@ module uart_tb;
     $display("\nPatmos 'uart' test:");
 		$display("Waiting for Patmos to be programmed");
 		$display("...");
-		wait(mprj_io[10] == 1); 
+		wait(mprj_io[37] == 1); 
 		$display("Patmos is running and should be looking for UART input\n");
 		send <= 1;
-		#40;
+		#200;
 		send <= 0;
 		$display("Transmitting message: \" %s \" to Patmos", tx_string);
 		$display("...");

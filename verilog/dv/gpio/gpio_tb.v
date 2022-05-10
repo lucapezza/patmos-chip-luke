@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // SPDX-License-Identifier: Apache-2.0
+
 `default_nettype none
 
 `timescale 1 ns / 1 ps
 `include "../SIM_DEFS.v"
 
-
-module wishbone_tb;
+module gpio_tb;
 	reg clock;
 	reg RSTB;
 	reg CSB;
@@ -26,23 +26,25 @@ module wishbone_tb;
 	reg power3, power4;
 
 	wire gpio;
-	wire [37:0] mprj_io;
-	wire io_config_done = mprj_io[32];
-	wire [31:0] wb_reg = mprj_io[31:0];
+	wire [7:0] patmos_gpio;
+	wire [2:0] mprj_io_2_0;
+	wire [26:0] mprj_io_37_11;
+	wire [37:0] mprj_io = {mprj_io_37_11, patmos_gpio, mprj_io_2_0};
+	reg [7:0] patmos_gpio_driver;
+	assign patmos_gpio = patmos_gpio_driver;
+	parameter max_cnt = 8'd21;
 
-	// External clock is used by default.  Make this artificially fast for the
-	// simulation.  Normally this would be a slow clock and the digital PLL
-	// would be the fast clock.
-
-	always #12.5 clock <= (clock === 1'b0);
+	always #50 clock <= (clock === 1'b0);
 
 	initial begin
 		clock = 0;
 	end
-  integer a;
+
+	integer a;
 	initial begin
-		$dumpfile("wishbone.vcd");
-		$dumpvars(0, wishbone_tb);
+		$dumpfile("gpio.vcd");
+		$dumpvars(0, gpio_tb);
+		
 		if(`DUMP_STRG) begin
       // Dump contents of BootMemory (writeable)
 			for(a = 0; a < 16; a = a + 1) begin
@@ -54,47 +56,44 @@ module wishbone_tb;
         $dumpvars(0, uut.mprj.patmos.patmos.patmos.cores_0.decode.rf.rf[a]);
       end
 		end
+		
 
 		// Repeat cycles of 1000 clock edges as needed to complete testbench
-		repeat (70) begin
+		repeat (90) begin
 			repeat (1000) @(posedge clock);
 			// $display("+1000 cycles");
 		end
 		$display("%c[1;31m",27);
 		`ifdef GL
-			$display ("Monitor: Timeout, Test 'wishbone' (GL) Failed");
+			$display ("Monitor: Timeout, Test 'gpio' (GL) Failed");
 		`else
-			$display ("Monitor: Timeout, Test 'wishbone' (RTL) Failed");
+			$display ("Monitor: Timeout, Test 'gpio' (RTL) Failed");
 		`endif
 		$display("%c[0m",27);
 		$finish;
 	end
-
 	initial begin
-		wait(io_config_done == 1);
-		wait(wb_reg == 32'h123);
-		$display("W/R SUCCESS: bootAddr");
-		wait(wb_reg == 32'h1);
-		$display("W/R SUCCESS: stall");
-		wait(wb_reg == 32'h0);
-		$display("W/R SUCCESS: reset");
-		wait(wb_reg == 32'h501);
-		$display("W/R SUCCESS: dataOdd");
-		wait(wb_reg == 32'h44);
-		$display("W/R SUCCESS: addrOdd");
-		wait(wb_reg == 32'h1);
-		$display("W/R SUCCESS: enOdd");
-		wait(wb_reg == 32'h78);
-		$display("W/R SUCCESS: dataEven");
-		wait(wb_reg == 32'h12);
-		$display("W/R SUCCESS: addrEven");
-		wait(wb_reg == 32'h1);
-		$display("W/R SUCCESS: enEven");
+    $display("\nPatmos 'gpio' test");
+	end
+	integer b;
+	initial begin
+		patmos_gpio_driver = max_cnt; // Send max count to Patmos
+		$display("Driving the gpio pins with value: %d\nWaiting for Patmos to be programmed...", max_cnt);
+		wait(mprj_io[37] == 1); // Wait for Patmos to be programmed
+		$display("Patmos has been programmed\nWaiting for Patmos to read gpio pins...");
+		#1000; // Wait for Patmos reset to be low
+		#900; // Wait for Patmos to read the gpio
+		$display("Patmos has read the gpio pins\nReading what Patmos is writing on the gpio pins:");
+		patmos_gpio_driver = 8'bz; // Drive gpio with high impedance for reading the output
+		for(b = max_cnt; b >= 0; b = b - 1) begin
+			wait(mprj_io[10:3] == b); // Now we check that Patmos counts down from max_cnt
+			$display("Read: %d", mprj_io[10:3]);
+		end
 		$display("%c[1;32m",27);
 		`ifdef GL
-	    	$display("Monitor: Test 'wishbone' (GL) Passed");
+	    	$display("Monitor: Test 'gpio' (GL) Passed");
 		`else
-		    $display("Monitor: Test 'wishbone' (RTL) Passed");
+		    $display("Monitor: Test 'gpio' (RTL) Passed");
 		`endif
 		$display("%c[0m",27);
 	  $finish;
@@ -112,10 +111,16 @@ module wishbone_tb;
 	initial begin		// Power-up sequence
 		power1 <= 1'b0;
 		power2 <= 1'b0;
+		power3 <= 1'b0;
+		power4 <= 1'b0;
 		#200;
 		power1 <= 1'b1;
 		#200;
 		power2 <= 1'b1;
+		#200;
+		power3 <= 1'b1;
+		#200;
+		power4 <= 1'b1;
 	end
 
 	wire flash_csb;
@@ -159,7 +164,7 @@ module wishbone_tb;
 	);
 
 	spiflash #(
-		.FILENAME("wishbone.hex")
+		.FILENAME("gpio.hex")
 	) spiflash (
 		.csb(flash_csb),
 		.clk(flash_clk),

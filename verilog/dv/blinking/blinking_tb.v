@@ -32,7 +32,7 @@ module blinking_tb;
 
 	assign led  = mprj_io[9:2];
 
-	always #12.5 clock <= (clock === 1'b0);
+	always #50 clock <= (clock === 1'b0);
 
 	initial begin
 		clock = 0;
@@ -45,8 +45,8 @@ module blinking_tb;
 		if(`DUMP_STRG) begin
       // Dump contents of BootMemory (writeable)
 			for(a = 0; a < 16; a = a + 1) begin
-				$dumpvars(0, uut.mprj.patmos.patmos.patmos.cores_0.fetch.bootMem.memWithWrEven.MEM[a]);
-				$dumpvars(0, uut.mprj.patmos.patmos.patmos.cores_0.fetch.bootMem.memWithWrOdd.MEM[a]);
+				$dumpvars(0, uut.mprj.patmos.patmos.patmos.cores_0.fetch.bootMem.memWithWrEven.mem[a]);
+				$dumpvars(0, uut.mprj.patmos.patmos.patmos.cores_0.fetch.bootMem.memWithWrOdd.mem[a]);
 			end
 			// Dump register file
 		  for(a = 0; a < 32; a = a + 1) begin

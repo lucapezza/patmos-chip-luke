@@ -8,7 +8,7 @@ void main()
     // Configure patmos output pins
     reg_mprj_io_0 =  GPIO_MODE_USER_STD_INPUT_NOPULL;
     reg_mprj_io_1 =  GPIO_MODE_USER_STD_OUTPUT;
-    reg_mprj_io_10 =  GPIO_MODE_MGMT_STD_OUTPUT;
+    reg_mprj_io_37 =  GPIO_MODE_MGMT_STD_OUTPUT;
     reg_mprj_xfer = 1;
     while (reg_mprj_xfer == 1); // Wait for configuration to become active
     // start program
@@ -195,5 +195,5 @@ void main()
     // end program
     reg_wb_bootAddr = 4097;
     reg_wb_reset = 0x0; // Set patmos reset low
-    reg_mprj_datal = 1 << 10; // Tell testbench that Patmos is programmed and running
+    reg_mprj_datah = 1 << 5; // Tell testbench that Patmos is programmed and running
 }

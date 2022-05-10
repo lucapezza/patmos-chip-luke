@@ -82,19 +82,13 @@ module user_project_wrapper #(
 /*--------------------------------------*/
 /* User project is instantiated  here   */
 /*--------------------------------------*/
+wire [7:0] patmos_oe;
 // UART
 assign io_oeb[0] = 1'b1;
 assign io_oeb[1] = 1'b0;
 
 // Leds
 assign io_oeb[2] = 1'b0;
-assign io_oeb[3] = 1'b0;
-assign io_oeb[4] = 1'b0;
-assign io_oeb[5] = 1'b0;
-assign io_oeb[6] = 1'b0;
-assign io_oeb[7] = 1'b0;
-assign io_oeb[8] = 1'b0;
-assign io_oeb[9] = 1'b0;
 
 // SPI RAM
 
@@ -102,22 +96,20 @@ assign io_oeb[9] = 1'b0;
 
 // Others ?
 
-
+// GPIO
+assign io_oeb[3] = ~patmos_oe[0]; 
+assign io_oeb[4] = ~patmos_oe[1];
+assign io_oeb[5] = ~patmos_oe[2];
+assign io_oeb[6] = ~patmos_oe[3];
+assign io_oeb[7] = ~patmos_oe[4];
+assign io_oeb[8] = ~patmos_oe[5];
+assign io_oeb[9] = ~patmos_oe[6];
+assign io_oeb[10] = ~patmos_oe[7];
 
 PatmosChip patmos(
   .clock(wb_clk_i),
   .reset(wb_rst_i),
-  .io_leds(
-    { io_out[9],
-      io_out[8],
-      io_out[7],
-      io_out[6],
-      io_out[5],
-      io_out[4],
-      io_out[3],
-      io_out[2]
-    }
-  ),
+  .io_led(io_out[2]),
   .io_uart_rx(io_in[0]),
   .io_uart_tx(io_out[1]),
   .io_wishbone_sel(wbs_sel_i),
@@ -127,11 +119,31 @@ PatmosChip patmos(
   .io_wishbone_we(wbs_we_i),
   .io_wishbone_ack(wbs_ack_o),
   .io_wishbone_addr(wbs_adr_i),
-  .io_wishbone_cyc(wbs_cyc_i)
+  .io_wishbone_cyc(wbs_cyc_i),
+  .io_gpio_oe_0(patmos_oe),
+  .io_gpio_in_0(
+    {io_in[10],
+     io_in[9],
+     io_in[8],
+     io_in[7],
+     io_in[6],
+     io_in[5],
+     io_in[4],
+     io_in[3]
+    }
+  ),
+  .io_gpio_out_0(
+    {io_out[10],
+     io_out[9],
+     io_out[8],
+     io_out[7],
+     io_out[6],
+     io_out[5],
+     io_out[4],
+     io_out[3]
+    }
+  )
 );
-
-
-
 
 endmodule	// user_project_wrapper
 

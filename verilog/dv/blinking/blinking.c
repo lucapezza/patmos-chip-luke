@@ -7,13 +7,6 @@ void main()
     reg_wb_enable = 1;
     // Configure patmos output pins
     reg_mprj_io_2 =  GPIO_MODE_USER_STD_OUTPUT;
-    reg_mprj_io_3 =  GPIO_MODE_USER_STD_OUTPUT;
-    reg_mprj_io_4 =  GPIO_MODE_USER_STD_OUTPUT;
-    reg_mprj_io_5 =  GPIO_MODE_USER_STD_OUTPUT;
-    reg_mprj_io_6 =  GPIO_MODE_USER_STD_OUTPUT;
-    reg_mprj_io_7 =  GPIO_MODE_USER_STD_OUTPUT;
-    reg_mprj_io_8 =  GPIO_MODE_USER_STD_OUTPUT;
-    reg_mprj_io_9 =  GPIO_MODE_USER_STD_OUTPUT;
     reg_mprj_xfer = 1;
     while (reg_mprj_xfer == 1); // Wait for configuration to become active
     // start program
