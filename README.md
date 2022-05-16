@@ -1,12 +1,9 @@
-# Caravel User Project
+# Caravel Patmos Project
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![UPRJ_CI](https://github.com/efabless/caravel_project_example/actions/workflows/user_project_ci.yml/badge.svg)](https://github.com/efabless/caravel_project_example/actions/workflows/user_project_ci.yml) [![Caravel Build](https://github.com/efabless/caravel_project_example/actions/workflows/caravel_build.yml/badge.svg)](https://github.com/efabless/caravel_project_example/actions/workflows/caravel_build.yml)
+This project is the result of a 13 week course of 12 students at DTU. It contains the time-predictable processor Patmos.
 
-| :exclamation: Important Note            |
-|-----------------------------------------|
+The original source is available at: https://github.com/t-crest/patmos
 
-## Please fill in your project documentation in this README.md file 
+For this project we added SPI based memory in following fork: https://github.com/os-chip-design/patmos
 
-Refer to [README](docs/source/quickstart.rst) for a quick start of how to use caravel_user_project
-
-Refer to [README](docs/source/index.rst) for this sample project documentation. 
+More documentation on this project can be found at: https://github.com/os-chip-design/os-chip-design
