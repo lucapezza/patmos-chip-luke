@@ -106,6 +106,10 @@ assign io_oeb[8] = ~patmos_oe[5];
 assign io_oeb[9] = ~patmos_oe[6];
 assign io_oeb[10] = ~patmos_oe[7];
 
+// Blinking Morse
+assign io_oeb[11] = 1'b0;
+assign io_oeb[12] = 1'b0;
+
 PatmosChip patmos(
   .clock(wb_clk_i),
   .reset(wb_rst_i),
@@ -143,6 +147,15 @@ PatmosChip patmos(
      io_out[3]
     }
   )
+);
+
+HelloMorse morse(
+  .clock(wb_clk_i),
+  .reset(wb_rst_i),
+  .io_led(io_out[11]),
+  .io_audio(io_out[12])
+  // output  io_gain,
+  // output  io_nshutdown
 );
 
 endmodule	// user_project_wrapper
