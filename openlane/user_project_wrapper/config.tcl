@@ -52,7 +52,7 @@ set ::env(DESIGN_IS_CORE) 1
 ### Macro PDN Connections
 set ::env(FP_PDN_CHECK_NODES) 0
 set ::env(FP_SIZING) absolute
-set ::env(FP_PDN_MACRO_HOOKS) "patmos.patmos.ramCtrl.mem vccd1 vssd1 \
+set ::env(FP_PDN_MACRO_HOOKS) "patmos.patmos.Spm.sky130_sram_1kbyte_1rw1r_32x256_8 vccd1 vssd1 \
  patmos.patmos.cores_0.fetch.bootMem.memWithWrEven vccd1 vssd1 \
  patmos.patmos.cores_0.fetch.bootMem.memWithWrOdd vccd1 "
 
