@@ -90,11 +90,6 @@ assign io_oeb[1] = 1'b0;
 // Leds
 assign io_oeb[2] = 1'b0;
 
-// SPI RAM
-
-// SPI FLASH
-
-// Others ?
 
 // GPIO
 assign io_oeb[3] = ~patmos_oe[0]; 
@@ -109,6 +104,13 @@ assign io_oeb[10] = ~patmos_oe[7];
 // Blinking Morse
 assign io_oeb[11] = 1'b0;
 assign io_oeb[12] = 1'b0;
+
+// SPI
+assign io_oeb[13] = 1'b0;
+assign io_oeb[14] = 1'b0;
+assign io_oeb[15] = 1'b0;
+assign io_oeb[16] = 1'b1;
+
 
 PatmosChip patmos(
   .clock(wb_clk_i),
@@ -146,7 +148,11 @@ PatmosChip patmos(
      io_out[4],
      io_out[3]
     }
-  )
+  ),
+  .io_spi_out_CE(io_out[13]),
+  .io_spi_out_MOSI(io_out[14]),
+  .io_spi_out_S_CLK(io_out[15]),
+  .io_spi_in_MISO(io_in[16])
 );
 
 HelloMorse morse(
