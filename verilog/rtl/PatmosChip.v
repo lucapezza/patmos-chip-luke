@@ -6,8 +6,8 @@ module NullICache(
   input  [31:0] io_exicache_callRetBase,
   input  [31:0] io_exicache_callRetAddr,
   output [31:0] io_icachefe_base,
-  output [5:0]  io_icachefe_relBase,
-  output [6:0]  io_icachefe_relPc,
+  output [9:0]  io_icachefe_relBase,
+  output [10:0] io_icachefe_relPc,
   output [31:0] io_icachefe_reloc,
   output [1:0]  io_icachefe_memSel
 );
@@ -23,8 +23,8 @@ module NullICache(
   wire [31:0] _T_6 = callAddrReg + _GEN_3; // @[NullICache.scala 33:36]
   wire [14:0] _T_7 = selIspmReg ? 15'h4000 : 15'h0; // @[NullICache.scala 34:27]
   assign io_icachefe_base = callRetBaseReg; // @[NullICache.scala 31:20]
-  assign io_icachefe_relBase = callRetBaseReg[5:0]; // @[NullICache.scala 32:23]
-  assign io_icachefe_relPc = _T_6[6:0]; // @[NullICache.scala 33:21]
+  assign io_icachefe_relBase = callRetBaseReg[9:0]; // @[NullICache.scala 32:23]
+  assign io_icachefe_relPc = _T_6[10:0]; // @[NullICache.scala 33:21]
   assign io_icachefe_reloc = {{17'd0}, _T_7}; // @[NullICache.scala 34:27]
   assign io_icachefe_memSel = {selIspmReg,1'h0}; // @[Cat.scala 30:58]
   always @(posedge clock) begin
@@ -264,8 +264,8 @@ module Fetch(
   input  [29:0] io_exfe_branchPc,
   input         io_memfe_doCallRet,
   input  [31:0] io_icachefe_base,
-  input  [5:0]  io_icachefe_relBase,
-  input  [6:0]  io_icachefe_relPc,
+  input  [9:0]  io_icachefe_relBase,
+  input  [10:0] io_icachefe_relPc,
   input  [31:0] io_icachefe_reloc,
   input  [1:0]  io_icachefe_memSel,
   input  [29:0] io_boot_pc_bootAddr,
@@ -304,9 +304,9 @@ module Fetch(
   reg  selSpm; // @[Fetch.scala 75:23]
   reg  selCache; // @[Fetch.scala 76:25]
   reg [31:0] baseReg; // @[Fetch.scala 89:24]
-  reg [5:0] relBaseReg; // @[Fetch.scala 90:27]
+  reg [9:0] relBaseReg; // @[Fetch.scala 90:27]
   reg [31:0] relocReg; // @[Fetch.scala 91:25]
-  wire [5:0] _GEN_2 = io_memfe_doCallRet ? io_icachefe_relBase : relBaseReg; // @[Fetch.scala 101:31 Fetch.scala 102:19 Fetch.scala 95:15]
+  wire [9:0] _GEN_2 = io_memfe_doCallRet ? io_icachefe_relBase : relBaseReg; // @[Fetch.scala 101:31 Fetch.scala 102:19 Fetch.scala 95:15]
   wire [31:0] _GEN_3 = io_memfe_doCallRet ? io_icachefe_reloc : relocReg; // @[Fetch.scala 101:31 Fetch.scala 103:17 Fetch.scala 97:13]
   wire  _T_5 = ~pcReg[0]; // @[Fetch.scala 118:34]
   wire [31:0] instr_a_rom = ~pcReg[0] ? bootMem_io_read_dataEven : bootMem_io_read_dataOdd; // @[Fetch.scala 118:24]
@@ -319,14 +319,14 @@ module Fetch(
   wire [29:0] _T_18 = pcReg + 30'h1; // @[Fetch.scala 133:53]
   wire [29:0] pc_cont = b_valid ? _T_16 : _T_18; // @[Fetch.scala 133:20]
   wire [29:0] _T_19 = io_exfe_doBranch ? io_exfe_branchPc : pc_cont; // @[Fetch.scala 136:16]
-  wire [29:0] pc_next = io_memfe_doCallRet ? {{23'd0}, io_icachefe_relPc} : _T_19; // @[Fetch.scala 135:8]
+  wire [29:0] pc_next = io_memfe_doCallRet ? {{19'd0}, io_icachefe_relPc} : _T_19; // @[Fetch.scala 135:8]
   wire [29:0] _T_21 = pcReg + 30'h4; // @[Fetch.scala 139:37]
   wire [29:0] _T_23 = pcReg + 30'h3; // @[Fetch.scala 139:54]
   wire [29:0] pc_cont2 = b_valid ? _T_21 : _T_23; // @[Fetch.scala 139:21]
-  wire [6:0] _T_25 = io_icachefe_relPc + 7'h2; // @[Fetch.scala 141:54]
+  wire [10:0] _T_25 = io_icachefe_relPc + 11'h2; // @[Fetch.scala 141:54]
   wire [29:0] _T_27 = io_exfe_branchPc + 30'h2; // @[Fetch.scala 142:48]
   wire [29:0] _T_28 = io_exfe_doBranch ? _T_27 : pc_cont2; // @[Fetch.scala 142:12]
-  wire [29:0] pc_next2 = io_memfe_doCallRet ? {{23'd0}, _T_25} : _T_28; // @[Fetch.scala 141:8]
+  wire [29:0] pc_next2 = io_memfe_doCallRet ? {{19'd0}, _T_25} : _T_28; // @[Fetch.scala 141:8]
   wire [29:0] pc_inc = pc_next[0] ? pc_next2 : pc_next; // @[Fetch.scala 145:19]
   wire [28:0] hi = pc_inc[29:1]; // @[Fetch.scala 149:29]
   wire [29:0] _T_33 = {hi,1'h0}; // @[Cat.scala 30:58]
@@ -335,13 +335,13 @@ module Fetch(
   wire [29:0] addrEven = io_ena & ~reset ? _T_33 : addrEvenReg; // @[Fetch.scala 148:26 Fetch.scala 149:14 Fetch.scala 146:12]
   wire [29:0] addrOdd = io_ena & ~reset ? _T_34 : addrOddReg; // @[Fetch.scala 148:26 Fetch.scala 150:13 Fetch.scala 147:11]
   wire [29:0] pcNext = pc_next; // @[Fetch.scala 135:8]
-  wire [29:0] _GEN_10 = {{24'd0}, relBaseReg}; // @[Fetch.scala 154:21]
+  wire [29:0] _GEN_10 = {{20'd0}, relBaseReg}; // @[Fetch.scala 154:21]
   wire [29:0] relPc = pcReg - _GEN_10; // @[Fetch.scala 154:21]
   wire [29:0] _T_37 = relPc + 30'h2; // @[Fetch.scala 163:36]
   wire [29:0] _T_39 = relPc + 30'h1; // @[Fetch.scala 163:53]
   wire  selSpmNext = io_ena ? io_icachefe_memSel[1] : selSpm; // @[Fetch.scala 83:17 Fetch.scala 84:16 Fetch.scala 79:14]
   wire  selCacheNext = io_ena ? io_icachefe_memSel[0] : selCache; // @[Fetch.scala 83:17 Fetch.scala 85:18 Fetch.scala 81:16]
-  wire [5:0] relBaseNext = io_ena ? _GEN_2 : relBaseReg; // @[Fetch.scala 99:16 Fetch.scala 95:15]
+  wire [9:0] relBaseNext = io_ena ? _GEN_2 : relBaseReg; // @[Fetch.scala 99:16 Fetch.scala 95:15]
   wire [31:0] relocNext = io_ena ? _GEN_3 : relocReg; // @[Fetch.scala 99:16 Fetch.scala 97:13]
   BootMemory bootMem ( // @[Fetch.scala 36:23]
     .clock(bootMem_clock),
@@ -404,7 +404,7 @@ module Fetch(
       baseReg <= io_icachefe_base; // @[Fetch.scala 100:13]
     end
     if (reset) begin // @[Fetch.scala 90:27]
-      relBaseReg <= 6'h1; // @[Fetch.scala 90:27]
+      relBaseReg <= 10'h1; // @[Fetch.scala 90:27]
     end else if (io_ena) begin // @[Fetch.scala 99:16]
       if (io_memfe_doCallRet) begin // @[Fetch.scala 101:31]
         relBaseReg <= io_icachefe_relBase; // @[Fetch.scala 102:19]
@@ -467,7 +467,7 @@ initial begin
   _RAND_5 = {1{`RANDOM}};
   baseReg = _RAND_5[31:0];
   _RAND_6 = {1{`RANDOM}};
-  relBaseReg = _RAND_6[5:0];
+  relBaseReg = _RAND_6[9:0];
   _RAND_7 = {1{`RANDOM}};
   relocReg = _RAND_7[31:0];
 `endif // RANDOMIZE_REG_INIT
@@ -4301,8 +4301,8 @@ module PatmosCore(
   wire [31:0] icache_io_exicache_callRetBase; // @[Patmos.scala 46:13]
   wire [31:0] icache_io_exicache_callRetAddr; // @[Patmos.scala 46:13]
   wire [31:0] icache_io_icachefe_base; // @[Patmos.scala 46:13]
-  wire [5:0] icache_io_icachefe_relBase; // @[Patmos.scala 46:13]
-  wire [6:0] icache_io_icachefe_relPc; // @[Patmos.scala 46:13]
+  wire [9:0] icache_io_icachefe_relBase; // @[Patmos.scala 46:13]
+  wire [10:0] icache_io_icachefe_relPc; // @[Patmos.scala 46:13]
   wire [31:0] icache_io_icachefe_reloc; // @[Patmos.scala 46:13]
   wire [1:0] icache_io_icachefe_memSel; // @[Patmos.scala 46:13]
   wire  fetch_clock; // @[Patmos.scala 60:21]
@@ -4319,8 +4319,8 @@ module PatmosCore(
   wire [29:0] fetch_io_exfe_branchPc; // @[Patmos.scala 60:21]
   wire  fetch_io_memfe_doCallRet; // @[Patmos.scala 60:21]
   wire [31:0] fetch_io_icachefe_base; // @[Patmos.scala 60:21]
-  wire [5:0] fetch_io_icachefe_relBase; // @[Patmos.scala 60:21]
-  wire [6:0] fetch_io_icachefe_relPc; // @[Patmos.scala 60:21]
+  wire [9:0] fetch_io_icachefe_relBase; // @[Patmos.scala 60:21]
+  wire [10:0] fetch_io_icachefe_relPc; // @[Patmos.scala 60:21]
   wire [31:0] fetch_io_icachefe_reloc; // @[Patmos.scala 60:21]
   wire [1:0] fetch_io_icachefe_memSel; // @[Patmos.scala 60:21]
   wire [29:0] fetch_io_boot_pc_bootAddr; // @[Patmos.scala 60:21]
@@ -5843,11 +5843,16 @@ module CpuInfo(
   wire [31:0] _GEN_12 = _T_5 ? 32'h1 : _GEN_11; // @[Conditional.scala 39:67 CpuInfo.scala 47:30]
   wire [31:0] _GEN_13 = _T_4 ? 32'h989680 : _GEN_12; // @[Conditional.scala 39:67 CpuInfo.scala 46:30]
   wire [31:0] _GEN_14 = _T_3 ? 32'h0 : _GEN_13; // @[Conditional.scala 40:58 CpuInfo.scala 45:30]
-  wire [31:0] _GEN_16 = 2'h1 == masterReg_Addr[3:2] ? 32'h0 : 32'hf0008010; // @[CpuInfo.scala 77:10 CpuInfo.scala 77:10]
-  wire [31:0] _GEN_17 = 2'h2 == masterReg_Addr[3:2] ? 32'h20000 : _GEN_16; // @[CpuInfo.scala 77:10 CpuInfo.scala 77:10]
-  wire [31:0] _GEN_18 = 2'h3 == masterReg_Addr[3:2] ? 32'h0 : _GEN_17; // @[CpuInfo.scala 77:10 CpuInfo.scala 77:10]
+  wire [31:0] _GEN_16 = 4'h1 == masterReg_Addr[5:2] ? 32'h0 : 32'hf0008024; // @[CpuInfo.scala 77:10 CpuInfo.scala 77:10]
+  wire [31:0] _GEN_17 = 4'h2 == masterReg_Addr[5:2] ? 32'h20000 : _GEN_16; // @[CpuInfo.scala 77:10 CpuInfo.scala 77:10]
+  wire [31:0] _GEN_18 = 4'h3 == masterReg_Addr[5:2] ? 32'h40c : _GEN_17; // @[CpuInfo.scala 77:10 CpuInfo.scala 77:10]
+  wire [31:0] _GEN_19 = 4'h4 == masterReg_Addr[5:2] ? 32'h70c : _GEN_18; // @[CpuInfo.scala 77:10 CpuInfo.scala 77:10]
+  wire [31:0] _GEN_20 = 4'h5 == masterReg_Addr[5:2] ? 32'h6bc : _GEN_19; // @[CpuInfo.scala 77:10 CpuInfo.scala 77:10]
+  wire [31:0] _GEN_21 = 4'h6 == masterReg_Addr[5:2] ? 32'h6f0 : _GEN_20; // @[CpuInfo.scala 77:10 CpuInfo.scala 77:10]
+  wire [31:0] _GEN_22 = 4'h7 == masterReg_Addr[5:2] ? 32'h6f8 : _GEN_21; // @[CpuInfo.scala 77:10 CpuInfo.scala 77:10]
+  wire [31:0] _GEN_23 = 4'h8 == masterReg_Addr[5:2] ? 32'h700 : _GEN_22; // @[CpuInfo.scala 77:10 CpuInfo.scala 77:10]
   assign io_ocp_S_Resp = masterReg_Cmd == 3'h2 ? 2'h1 : _GEN_0; // @[CpuInfo.scala 80:37 CpuInfo.scala 81:10]
-  assign io_ocp_S_Data = masterReg_Addr[15] ? _GEN_18 : _GEN_14; // @[CpuInfo.scala 76:44 CpuInfo.scala 77:10]
+  assign io_ocp_S_Data = masterReg_Addr[15] ? _GEN_23 : _GEN_14; // @[CpuInfo.scala 76:44 CpuInfo.scala 77:10]
   always @(posedge clock) begin
     masterReg_Cmd <= io_ocp_M_Cmd; // @[CpuInfo.scala 26:22]
     masterReg_Addr <= io_ocp_M_Addr; // @[CpuInfo.scala 26:22]
