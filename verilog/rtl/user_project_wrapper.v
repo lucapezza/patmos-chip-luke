@@ -111,6 +111,31 @@ assign io_oeb[14] = 1'b0;
 assign io_oeb[15] = 1'b0;
 assign io_oeb[16] = 1'b1;
 
+// Dummy assignments
+assign la_data_out = 128'h70757373796164646963740000000000;
+assign user_irq = 3'b000;
+assign io_oeb[17] = 1'b1;
+assign io_oeb[18] = 1'b1;
+assign io_oeb[19] = 1'b1;
+assign io_oeb[20] = 1'b1;
+assign io_oeb[21] = 1'b1;
+assign io_oeb[22] = 1'b1;
+assign io_oeb[23] = 1'b1;
+assign io_oeb[24] = 1'b1;
+assign io_oeb[25] = 1'b1;
+assign io_oeb[26] = 1'b1;
+assign io_oeb[27] = 1'b1;
+assign io_oeb[28] = 1'b1;
+assign io_oeb[29] = 1'b1;
+assign io_oeb[30] = 1'b1;
+assign io_oeb[31] = 1'b1;
+assign io_oeb[32] = 1'b1;
+assign io_oeb[33] = 1'b1;
+assign io_oeb[34] = 1'b1;
+assign io_oeb[35] = 1'b1;
+assign io_oeb[36] = 1'b1;
+assign io_oeb[37] = 1'b1;
+
 
 PatmosChip patmos(
   .clock(wb_clk_i),
