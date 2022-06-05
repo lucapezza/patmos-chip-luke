@@ -8563,6 +8563,10 @@ end // initial
 `endif // SYNTHESIS
 endmodule
 module PatmosChip(
+`ifdef USE_POWER_PINS
+    inout vccd1,
+    inout vssd1,
+`endif
   input         clock,
   input         reset,
   input  [7:0]  io_gpio_in_0,

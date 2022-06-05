@@ -44,7 +44,7 @@ set ::env(VERILOG_FILES) "\
 set ::env(CLOCK_PORT) "user_clock2"
 set ::env(CLOCK_NET) "patmos.clock"
 
-set ::env(CLOCK_PERIOD) "50"
+set ::env(CLOCK_PERIOD) "100"
 
 set ::env(DESIGN_IS_CORE) 1
 
