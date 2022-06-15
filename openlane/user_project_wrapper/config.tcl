@@ -149,10 +149,4 @@ set ::env(GLB_RT_OBS) " \
     met3  1800.00 1800.00  2279.78 2197.5,
     met4  1800.00 1800.00  2279.78 2197.5"
     
-### Substitue size 12 Decap
-set ::env(DECAP_CELL) "\
-	sky130_fd_sc_hd__decap_3 \
-	sky130_fd_sc_hd__decap_4 \
-	sky130_fd_sc_hd__decap_6 \
-	sky130_fd_sc_hd__decap_8 \
-	sky130_ef_sc_hd__decap_12"
+set :: env(CELL_PAD_EXCLUDE) {sky130_fd_sc_hd__decap_12}
